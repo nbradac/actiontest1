@@ -25,5 +25,5 @@ jobs:
       - name: asdf
         run: echo "HERE"
       - name: maybe fail??
-        if:  ${{ inputs.print_tags }} 
+        if:  ${{ inputs.fail }} 
         run: exit -1
