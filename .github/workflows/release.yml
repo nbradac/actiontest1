@@ -6,5 +6,7 @@ jobs:
   release_A:
     runs-on: ubuntu-latest
     steps:
+      - name: checkout
+        uses: actions/checkout@v4
       - name: call
         uses: ./.github/workflows/ci.yml
