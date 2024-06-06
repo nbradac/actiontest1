@@ -1,0 +1,13 @@
+name: ci
+on:
+  workflow_dispatch:
+
+jobs:
+  job_A:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: asdf
+        run: |
+          cat file1.txt
