@@ -1,13 +1,29 @@
 name: ci
 on:
   workflow_dispatch:
+    inputs:
+      fail:
+        description: 'should a job fail?'
+        required: true
+        type: boolean
+        default: false
 
 jobs:
   job_A:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: checkout
         uses: actions/checkout@v4
       - name: asdf
         run: |
           cat file1.txt
+  job_B:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: asdf
+        run: echo "HERE"
+      - name: maybe fail??
+        if:  ${{ inputs.print_tags }} 
+        run: exit -1
