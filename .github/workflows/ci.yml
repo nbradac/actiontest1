@@ -64,7 +64,10 @@ jobs:
         with:
           image: my-test-image:latest
           options: -v ${{ github.workspace }}:/github/workspace
-          run: touch created.inside.docker.image
+          run: |
+            touch created.inside.docker.image
+            touch fileA
+            touch fileB
 
       - name: asdf
         run: |
