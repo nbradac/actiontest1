@@ -54,10 +54,12 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
               ref: 'refs/tags/release-run-${{ github.run_id }}',            
               sha: context.sha
             })
-              
+
       - name: update version file
         run: |
           echo ${{ github.run_id }} >> version.txt
+          git config --global user.name "the 'release' github action"
+          git config --global user.email "you@example.com"
           git add version.txt
           git commit -m 'update version'
           git push
