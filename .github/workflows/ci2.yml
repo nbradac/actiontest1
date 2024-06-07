@@ -7,6 +7,11 @@ on:
         required: true
         type: boolean
         default: false
+      extra:
+        description: 'should a job fail?'
+        required: true
+        type: boolean
+        default: false
   workflow_call:  # when called from another workflow
     inputs:
       fail:
