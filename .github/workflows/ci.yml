@@ -64,4 +64,8 @@ jobs:
         with:
           image: my-test-image:latest
           options: -v ${{ github.workspace }}:/home/asdf -e HOME=/home/asdf
-          run: ls
+          run: |
+            pwd
+            ls
+            cd /github/workspace
+            ls
