@@ -1,0 +1,75 @@
+name: ci2
+on:
+  workflow_dispatch: # when dispatched directly from the github UI
+    inputs:
+      fail:
+        description: 'should a job fail?'
+        required: true
+        type: boolean
+        default: false
+  workflow_call:  # when called from another workflow
+    inputs:
+      fail:
+        description: 'should a job fail?'
+        required: true
+        type: boolean
+        default: false
+
+jobs: # these jobs all run in parallel
+  job_A: # shows how to upload an artifact for subsequent use in the workflow (can be shared with the calling workflow)
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: asdf
+        run: |
+          cat file1.txt
+          touch new-file.txt
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v4
+        with:
+          name: my-artifact
+          path: new-file.txt
+  job_B: # just a job that can force a failure condition
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: asdf
+        run: echo "HERE"
+      - name: maybe fail??
+        if:  ${{ inputs.fail }} 
+        run: exit -1
+  job_C: # demonstrates building a docker container, running a subsequent step in that container, and showing that the results are visible in subsequent steps
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: Docker Setup Buildx
+        uses: docker/setup-buildx-action@v3.3.0
+    
+      - uses: docker/build-push-action@v5.3.0
+        with:
+          context: .
+          file: "Dockerfile.test"
+          tags: my-test-image:latest
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          push: false
+
+      - name: Run inside docker image
+        uses: addnab/docker-run-action@v3
+        with:
+          image: my-test-image:latest
+          options: -v ${{ github.workspace }}:/github/workspace
+          run: |
+            touch created.inside.docker.image
+            touch fileA
+            touch fileB
+
+      - name: asdf
+        run: |
+          ls
+          cat semicolon_delimited_script
