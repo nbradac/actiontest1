@@ -67,4 +67,6 @@ jobs:
           run: touch created.inside.docker.image
 
       - name: asdf
-        run: ls
+        run: |
+          ls
+          cat semicolon_delimited_script
