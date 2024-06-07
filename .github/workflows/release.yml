@@ -98,8 +98,9 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
               owner: context.repo.owner,
               repo: context.repo.repo,
               ref: 'refs/tags/release-run-${{ github.run_id }}-POST',            
-              sha: '${{needs.tag.outputs.new-sha}}' # the single quotes are important!!!!
+              sha: '${{needs.tag.outputs.new-sha}}'
             })
+          # the single quotes are important!!!!
 
   push:
     runs-on: ubuntu-latest
