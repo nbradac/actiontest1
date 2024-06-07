@@ -30,3 +30,18 @@ jobs:
           name: my-artifact
       - name: ls
         run: ls
+  tag:
+    runs-on: ubuntu-latest
+    needs: package
+    if:  ${{ inputs.release }} 
+    steps:
+      - name: Create Git tag for PR
+        uses: actions/github-script@v4
+        with:
+          script: |
+            github.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "refs/tags/0.0.0-pr${{github.event.number}}",
+              sha: context.sha
+            })
