@@ -64,6 +64,20 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
           git commit -m 'update version'
           git push
 
+      - name: Create/update tag 2
+        uses: actions/github-script@v7
+        with:
+          # instead of the default GITHUB_TOKEN, this could be a separate token that only gives permission to add tags
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/release-run-${{ github.run_id }}-POST',            
+              sha: context.sha
+            })
+
+
   push:
     runs-on: ubuntu-latest
     needs: package
