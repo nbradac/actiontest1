@@ -1,4 +1,6 @@
 FROM alpine:latest
 
 WORKDIR /github/workspace
+
+# this file won't show up in the running container because we mount the workflow's workspace to /github/workspace
 RUN touch some.file.txt

@@ -1,13 +1,13 @@
 name: ci
 on:
-  workflow_dispatch:
+  workflow_dispatch: # when dispatched directly from the github UI
     inputs:
       fail:
         description: 'should a job fail?'
         required: true
         type: boolean
         default: false
-  workflow_call:  
+  workflow_call:  # when called from another workflow
     inputs:
       fail:
         description: 'should a job fail?'
@@ -16,7 +16,7 @@ on:
         default: false
 
 jobs:
-  job_A:
+  job_A: # shows how to upload an artifact for subsequent use in the workflow (can be shared with the calling workflow)
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -30,7 +30,7 @@ jobs:
         with:
           name: my-artifact
           path: new-file.txt
-  job_B:
+  job_B: # just a job that can force a failure condition
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -40,7 +40,7 @@ jobs:
       - name: maybe fail??
         if:  ${{ inputs.fail }} 
         run: exit -1
-  job_C:
+  job_C: # demonstrates building a docker container, running a subsequent step in that container, and showing that the results are visible in subsequent steps
     runs-on: ubuntu-latest
     steps:
       - name: checkout
