@@ -64,8 +64,7 @@ jobs:
         with:
           image: my-test-image:latest
           options: -v ${{ github.workspace }}:/github/workspace
-          run: |
-            pwd
-            ls
-            cd /github/workspace
-            ls
+          run: touch created.inside.docker.image
+
+      - name: asdf
+        run: ls
