@@ -1,0 +1,27 @@
+name: ci
+on:
+  workflow_dispatch: # when dispatched directly from the github UI
+    inputs:
+      fail:
+        description: 'should a job fail?'
+        required: true
+        type: boolean
+        default: false
+  workflow_call:  # when called from another workflow
+    inputs:
+      fail:
+        description: 'should a job fail?'
+        required: true
+        type: boolean
+        default: false
+
+jobs: # these jobs all run in parallel
+  job_A: # shows how to upload an artifact for subsequent use in the workflow (can be shared with the calling workflow)
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: asdf
+        run: |
+          cat file1.txt
+          touch new-file.txt
