@@ -39,6 +39,9 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
     # only execute if this is a release
     if: ${{ inputs.release }}
     steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
       - name: Create/update tag
         uses: actions/github-script@v7
         with:
@@ -51,6 +54,7 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
               ref: 'refs/tags/release-run-${{ github.run_id }}',            
               sha: context.sha
             })
+              
       - name: update version file
         run: |
           echo ${{ github.run_id }} >> version.txt
