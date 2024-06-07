@@ -1,4 +1,4 @@
-name: ci
+name: ci2
 on:
   workflow_dispatch: # when dispatched directly from the github UI
     inputs:
