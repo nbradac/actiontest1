@@ -58,10 +58,9 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           push: false
-          
+
       - name: Run inside docker image
         uses: addnab/docker-run-action@v3
         with:
           image: my-test-image:latest
-          run: |
-            cat file1.txt
+          run: ls
