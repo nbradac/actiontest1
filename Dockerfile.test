@@ -1,3 +1,4 @@
 FROM alpine:latest
 
+WORKDIR /github/workspace
 RUN touch some.file.txt
