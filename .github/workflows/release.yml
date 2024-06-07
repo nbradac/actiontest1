@@ -44,6 +44,10 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
       - name: checkout
         uses: actions/checkout@v4
 
+      - name: output
+        run: |
+          echo "the current sha: $GITHUB_SHA"
+
       - name: Create/update tag
         uses: actions/github-script@v7
         with:
@@ -60,12 +64,14 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
       - name: update the version file
         id: update-version
         run: |
+          echo "the ORIGINAL sha: `git rev-parse HEAD`"
           echo ${{ github.run_id }} > version.txt
           git config --global user.name "the 'release' github action"
           git config --global user.email "you@example.com"
           git add version.txt
           git commit -m 'update version'
           git push
+          echo "the NEW sha: `git rev-parse HEAD`"
           echo "new-sha=`git rev-parse HEAD`" >> "$GITHUB_OUTPUT"
 
   final-tag:
