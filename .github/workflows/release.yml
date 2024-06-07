@@ -13,7 +13,7 @@ on:
         type: boolean
         default: false
 
-jobs:
+jobs: # these jobs run serially because of the 'needs:' keyword on each
   ci: # kick off a different workflow
     uses: ./.github/workflows/ci.yml
     with:
@@ -32,7 +32,7 @@ jobs:
         run: ls
   tag: # shows how to add a tag to the git repo
     runs-on: ubuntu-latest
-    needs: package
+    needs: package # wait for package job to complete
     # only execute if this is a release
     if:  ${{ inputs.release }}
     steps:
