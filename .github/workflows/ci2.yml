@@ -8,10 +8,10 @@ on:
         type: boolean
         default: false
       extra:
-        description: 'should a job fail?'
+        description: 'extra???'
         required: true
         type: boolean
-        default: false
+        default: true
   workflow_call:  # when called from another workflow
     inputs:
       fail:
