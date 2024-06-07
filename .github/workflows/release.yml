@@ -38,11 +38,12 @@ jobs:
       - name: Create/update tag
         uses: actions/github-script@v7
         with:
+          # instead of the default GITHUB_TOKEN, this could be a separate token that only gives permission to add tags
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: 'refs/tags/v${{ github.event.number }}',            
+              ref: 'refs/tags/release-run-${{ github.run_id }}',            
               sha: context.sha
             })
