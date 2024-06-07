@@ -15,10 +15,12 @@ on:
 
 jobs: # these jobs run serially because of the 'needs:' keyword on each
 
-  ci: # kick off a different workflow
+  ci: # kick off a different workflow - all the normal CI stuff can be neatly isolated
     uses: ./.github/workflows/ci.yml
     with:
-      fail: ${{ inputs.fail }} 
+      fail: ${{ inputs.fail }}
+      # could add a 'capture-assets' boolean input option on CI so that it knows if/when to store artifacts for subsequent packaging
+      # The normal CI run won't need to store those artifacts - only when it's being run as a 'sub'-workflow of 'release'
 
   package: # shows retrieving an artifact from the previous step
     runs-on: ubuntu-latest
@@ -39,7 +41,7 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
     # only execute if this is a release
     if: ${{ inputs.release }}
     outputs:
-      new-sha: ${{ steps.update-version.outputs.new-sha }}
+      new-sha: ${{ steps.update-version.outputs.new-sha }} # used by the final-tag job
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -62,7 +64,8 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
             })
 
       - name: update the version file
-        id: update-version
+        id: update-version # need an 'id' here so we can grab the new-sha and store it as an output
+        # it's not really a 'version', but it's a value that changes with each run
         run: |
           echo "the ORIGINAL sha: `git rev-parse HEAD`"
           echo ${{ github.run_id }} > version.txt
@@ -88,7 +91,7 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
               owner: context.repo.owner,
               repo: context.repo.repo,
               ref: 'refs/tags/release-run-${{ github.run_id }}-POST',            
-              sha: '${{needs.tag.outputs.new-sha}}'
+              sha: '${{needs.tag.outputs.new-sha}}' # the single quotes are important!!!!
             })
 
   push:
