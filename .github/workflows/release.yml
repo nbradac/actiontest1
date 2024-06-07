@@ -12,6 +12,12 @@ on:
         required: true
         type: boolean
         default: false
+      release-version:
+        required: true
+        type: string
+      new-version:
+        required: true
+        type: string
 
 jobs: # these jobs run serially because of the 'needs:' keyword on each
 
@@ -69,6 +75,7 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
         run: |
           echo "the ORIGINAL sha: `git rev-parse HEAD`"
           echo ${{ github.run_id }} > version.txt
+          echo VERSION=${{ inputs.new-version }} >> version.txt
           git config --global user.name "the 'release' github action"
           git config --global user.email "you@example.com"
           git add version.txt
