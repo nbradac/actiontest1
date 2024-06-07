@@ -18,13 +18,15 @@ on:
       new-version:
         required: true
         type: string
+  schedule:
+    - cron: '0 12 * * *'
 
 jobs: # these jobs run serially because of the 'needs:' keyword on each
 
   ci: # kick off a different workflow - all the normal CI stuff can be neatly isolated
     uses: ./.github/workflows/ci.yml
     with:
-      fail: ${{ inputs.fail }}
+      fail: ${{ inputs.fail || false }}
       # could add a 'capture-assets' boolean input option on CI so that it knows if/when to store artifacts for subsequent packaging
       # The normal CI run won't need to store those artifacts - only when it's being run as a 'sub'-workflow of 'release'
 
@@ -45,7 +47,7 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
     runs-on: ubuntu-latest
     needs: package # wait for package job to complete
     # only execute if this is a release
-    if: ${{ inputs.release }}
+    if: ${{ inputs.release || false }}
     outputs:
       new-sha: ${{ steps.update-version.outputs.new-sha }} # used by the final-tag job
     steps:
@@ -107,10 +109,10 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
     needs: package
     steps:
       - name: push to release
-        if: ${{ inputs.release }}
+        if: ${{ inputs.release || false }}
         run: echo "this is where we'd push to the release repo"
       - name: push to dev
-        if: ${{ !inputs.release }}
+        if: ${{ !inputs.release || false }}
         run: echo "this is where we'd push to the dev repo"
       - name: validate packages
         run: echo "validate whatever we find in packages/"
