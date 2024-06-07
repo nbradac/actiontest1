@@ -24,3 +24,9 @@ jobs:
     steps:
       - name: step1
         run: echo "building some packages"
+      - name: Download a single artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: my-artifact
+      - name: ls
+        run: ls
