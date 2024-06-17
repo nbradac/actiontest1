@@ -103,6 +103,17 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
               sha: '${{needs.tag.outputs.new-sha}}'
             })
           # the single quotes are important!!!!
+      - name: create a file
+        run: touch some.file
+      - name: create release
+        uses: softprops/action-gh-release@v2
+        with:
+          body: "put notable changes here"
+          target_commitish: ${{needs.tag.outputs.new-sha}}
+          generate_release_notes: true
+          name: "release ${{ github.run_number }}"
+          files: |
+            some.file
 
   push:
     runs-on: ubuntu-latest
