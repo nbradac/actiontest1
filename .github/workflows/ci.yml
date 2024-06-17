@@ -42,6 +42,7 @@ jobs: # these jobs all run in parallel
         run: exit -1
   job_C: # demonstrates building a docker container, running a subsequent step in that container, and showing that the results are visible in subsequent steps
     runs-on: ubuntu-latest
+    if: false
     steps:
       - name: checkout
         uses: actions/checkout@v4

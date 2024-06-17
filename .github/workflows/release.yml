@@ -112,6 +112,7 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
           target_commitish: ${{needs.tag.outputs.new-sha}}
           generate_release_notes: true
           name: "release ${{ github.run_number }}"
+          tag_name: 'release-run-${{ github.run_id }}'
           files: |
             some.file
 
