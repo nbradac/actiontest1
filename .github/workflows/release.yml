@@ -104,7 +104,7 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
             })
           # the single quotes are important!!!!
       - name: create a file
-        run: touch some.file
+        run: echo "some data" > some.file
       - name: create release
         uses: softprops/action-gh-release@v2
         with:
