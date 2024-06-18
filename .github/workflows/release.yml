@@ -23,8 +23,17 @@ on:
 
 jobs: # these jobs run serially because of the 'needs:' keyword on each
 
+  validation:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          [[ "${{ inputs.release-version }}" =~ ^[0-9]\.[0-9][0-9]?\.[0-9][0-9]?$ ]]
+          [[ "${{ inputs.new-version }}" =~ ^[0-9]\.[0-9][0-9]?\.[0-9][0-9]?$ ]]
+
+
   ci: # kick off a different workflow - all the normal CI stuff can be neatly isolated
     uses: ./.github/workflows/ci.yml
+    needs: validation
     with:
       fail: ${{ inputs.fail || false }}
       # could add a 'capture-assets' boolean input option on CI so that it knows if/when to store artifacts for subsequent packaging
