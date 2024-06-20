@@ -34,7 +34,7 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
     steps:
       - name: verify aeron tag
         id: check-tag
-        if: ${{ inputs.aeron-git-tag }} != "origin/HEAD"
+        if: ${{ inputs.aeron-git-tag }} != 'origin/HEAD'
         uses: mukunku/tag-exists-action@v1.6.0
         with: 
           tag: '${{ inputs.aeron-git-tag }}'
