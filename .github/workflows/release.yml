@@ -18,6 +18,12 @@ on:
       new-version:
         required: true
         type: string
+      aeron-git-tag:
+        description: Aeron OSS git tag
+        required: true
+        default: origin/HEAD
+        type: string
+
   schedule:
     - cron: '0 12 * * *'
 
@@ -26,6 +32,14 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
   validation:
     runs-on: ubuntu-latest
     steps:
+      - uses: mukunku/tag-exists-action@v1.6.0
+        id: check-tag
+        with: 
+          tag: '${{ inputs.aeron-git-tag }}'
+          repo: 'real-logic/aeron'
+      - run: echo "Tag exists!"
+        if: steps.check-tag.outputs.exists == 'true'
+    
       - run: |
           [[ "${{ inputs.release-version }}" =~ ^[0-9]\.[0-9][0-9]?\.[0-9][0-9]?$ ]]
           [[ "${{ inputs.new-version }}" =~ ^[0-9]\.[0-9][0-9]?\.[0-9][0-9]?$ ]]
