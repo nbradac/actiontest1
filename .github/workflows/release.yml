@@ -32,6 +32,17 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
   validation:
     runs-on: ubuntu-latest
     steps:
+      - id: check-branch-exists
+        uses: GuillaumeFalourd/branch-exists@v1
+        with:
+          branch: '${{ inputs.aeron-git-tag }}'
+
+      - if: steps.check-branch-exists.outputs.exists == 'true'
+        run: echo '<BRANCH_NAME> Branch exists'
+
+      - if: steps.check-branch-exists.outputs.exists == 'false'
+        run: echo '<BRANCH_NAME> Branch NOT FOUND'
+
       - uses: mukunku/tag-exists-action@v1.6.0
         id: check-tag
         with: 
