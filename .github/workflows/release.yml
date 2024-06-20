@@ -39,11 +39,11 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
         with: 
           tag: '${{ inputs.aeron-git-tag }}'
           repo: 'real-logic/aeron'
-      - name: asdf
-        if: ${{ inputs.aeron-git-tag }} != "origin/HEAD" && steps.check-tag.outputs.exists == 'true'
+      - name: tag exists
+        if: ${{ inputs.aeron-git-tag != 'origin/HEAD' && steps.check-tag.outputs.exists == 'true' }}
         run: echo "Tag exists!"
-      - name: qwer
-        if: ${{ inputs.aeron-git-tag }} != "origin/HEAD" && steps.check-tag.outputs.exists == 'false'
+      - name: tag does not exist
+        if: ${{ inputs.aeron-git-tag != 'origin/HEAD' && steps.check-tag.outputs.exists == 'false' }}
         run: |
           echo "Tag DOES NOT exist!"
           exit 1
