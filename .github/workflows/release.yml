@@ -31,6 +31,8 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
 
   validation:
     runs-on: ubuntu-latest
+    outputs:
+      new-sha: ${{ steps.set-sha.outputs.new-sha }}
     steps:
       - name: verify aeron tag
         id: check-tag
@@ -49,21 +51,33 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
       #    [[ "${{ inputs.release-version }}" =~ ^[0-9]\.[0-9][0-9]?\.[0-9][0-9]?$ ]]
       #    [[ "${{ inputs.new-version }}" =~ ^[0-9]\.[0-9][0-9]?\.[0-9][0-9]?$ ]]
 
-      - run: |
-          echo "new-sha=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+      - if: ${{ inputs.release }}
+        id: release-yes
+        run: |
+          echo "NEW_SHA=yes${{ github.sha }}" >> "$GITHUB_ENV"
+    
+      - if: ${{ !inputs.release }}
+        id: release-no
+        run: |
+          echo "NEW_SHA=no${{ github.sha }}" >> "$GITHUB_ENV"
 
-  asdf:
+      - id: set-sha
+        run: |
+          echo "new-sha=$NEW_SHA" >> "$GITHUB_OUTPUT"
+
+  intermediate:
     runs-on: ubuntu-latest
     needs: validation
     steps:
-      - run: |
+      -
+        run: |
           echo git sha: ${{ github.sha }}
           echo new sha: ${{ needs.validation.outputs.new-sha }}
           exit 1
 
   ci: # kick off a different workflow - all the normal CI stuff can be neatly isolated
     uses: ./.github/workflows/ci.yml
-    needs: asdf
+    needs: intermediate
     with:
       fail: ${{ inputs.fail || false }}
       # could add a 'capture-assets' boolean input option on CI so that it knows if/when to store artifacts for subsequent packaging
