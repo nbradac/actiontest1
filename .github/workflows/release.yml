@@ -39,23 +39,31 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
         with: 
           tag: '${{ inputs.aeron-git-tag }}'
           repo: 'real-logic/aeron'
-      - name: tag exists
-        if: ${{ inputs.aeron-git-tag != 'origin/HEAD' && steps.check-tag.outputs.exists == 'true' }}
-        run: echo "Tag exists!"
       - name: tag does not exist
         if: ${{ inputs.aeron-git-tag != 'origin/HEAD' && steps.check-tag.outputs.exists == 'false' }}
         run: |
           echo "Tag DOES NOT exist!"
           exit 1
     
-      - run: |
-          [[ "${{ inputs.release-version }}" =~ ^[0-9]\.[0-9][0-9]?\.[0-9][0-9]?$ ]]
-          [[ "${{ inputs.new-version }}" =~ ^[0-9]\.[0-9][0-9]?\.[0-9][0-9]?$ ]]
+      #- run: |
+      #    [[ "${{ inputs.release-version }}" =~ ^[0-9]\.[0-9][0-9]?\.[0-9][0-9]?$ ]]
+      #    [[ "${{ inputs.new-version }}" =~ ^[0-9]\.[0-9][0-9]?\.[0-9][0-9]?$ ]]
 
+      - run: |
+          echo "new-sha=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+
+  asdf:
+    runs-on: ubuntu-latest
+    needs: validation
+    steps:
+      - run: |
+          echo git sha: ${{ github.sha }}
+          echo new sha: ${{ needs.validation.outputs.new-sha }}
+          exit 1
 
   ci: # kick off a different workflow - all the normal CI stuff can be neatly isolated
     uses: ./.github/workflows/ci.yml
-    needs: validation
+    needs: asdf
     with:
       fail: ${{ inputs.fail || false }}
       # could add a 'capture-assets' boolean input option on CI so that it knows if/when to store artifacts for subsequent packaging
