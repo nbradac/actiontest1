@@ -42,11 +42,11 @@ jobs:
 
       - name: update the version file
         run: |
+          git pull
+
           git config --global user.name "the 'release' github action"
           git config --global user.email "you@example.com"
 
-          git pull
-          
           cat version.txt
           echo ${{ inputs.new-version }} > version.txt
           
