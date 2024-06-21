@@ -21,6 +21,9 @@ jobs:
       - name: update version file and add tag
         id: asdf
         run: |
+          git config --global user.name "the 'release' github action"
+          git config --global user.email "you@example.com"
+          
           echo ${{ inputs.version }} > version.txt
           git commit -am "${{ inputs.version }} released."
           git tag -f "v${{ inputs.version }}"
@@ -38,9 +41,11 @@ jobs:
 
       - name: update the version file
         run: |
+          git config --global user.name "the 'release' github action"
+          git config --global user.email "you@example.com"
+
           cat version.txt
           echo ${{ inputs.new-version }} > version.txt
-          #git config --global user.name "the 'release' github action"
-          #git config --global user.email "you@example.com"
+          
           git commit -am 'update version'
           git push
