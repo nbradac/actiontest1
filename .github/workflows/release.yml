@@ -58,6 +58,8 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
       - name: figure out versions
         id: version-check
         run: |
+          MAIN_BRANCH_REF="refs/heads/asdfmaster"
+
           major=${{ inputs.release-major-version }}
           minor=${{ inputs.release-minor-version }}
           patch=${{ inputs.release-patch-version }}
@@ -69,14 +71,19 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
 
           echo "release-version=$major.$minor.$patch" >> "$GITHUB_OUTPUT"
 
-          [ "${{ github.ref }}" == "refs/heads/asdfmaster" ] && CREATE_BRANCH=true || CREATE_BRANCH=false
+          [ "${{ github.ref }}" == "$MAIN_BRANCH_REF" ] && CREATE_BRANCH=true || CREATE_BRANCH=false
           echo "create-branch=$CREATE_BRANCH" >> "$GITHUB_OUTPUT"
 
-          [ "${{ github.ref }}" == "refs/heads/asdfmaster" ] && SNAPSHOT_VERSION="$major.$minor_incr.$patch" || SNAPSHOT_VERSION="$major.$minor.$patch_incr"
+          [ "${{ github.ref }}" == "$MAIN_BRANCH_REF" ] && SNAPSHOT_VERSION="$major.$minor_incr.$patch" || SNAPSHOT_VERSION="$major.$minor.$patch_incr"
           echo "snapshot-version=$SNAPSHOT_VERSION-SNAPSHOT" >> "$GITHUB_OUTPUT"
-          
-          echo "new-branch=release-$major.$minor.$patch" >> "$GITHUB_OUTPUT"
-          echo "branch-snapshot-version=$major.$minor.$patch_incr-SNAPSHOT" >> "$GITHUB_OUTPUT"
+
+          NEW_BRANCH=""
+          [ "${{ github.ref }}" == "$MAIN_BRANCH_REF" ] && NEW_BRANCH=release-$major.$minor.$patch
+          echo "new-branch=release-$NEW_BRANCH" >> "$GITHUB_OUTPUT"
+
+          BRANCH_SNAPSHOT_VERSION=""
+          [ "${{ github.ref }}" == "$MAIN_BRANCH_REF" ] && BRANCH_SNAPSHOT_VERSION=$major.$minor.$patch_incr-SNAPSHOT"
+          echo "branch-snapshot-version=$BRANCH_SNAPSHOT_VERSION" >> "$GITHUB_OUTPUT"
 
           cat $GITHUB_OUTPUT
      
