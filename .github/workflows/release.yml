@@ -49,10 +49,13 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
       - name: figure out versions
         id: version-check
         run: |
-          let major = ${{ inputs.release-major-version }}
-          let minor = ${{ inputs.release-minor-version }}
-          let patch = ${{ inputs.release-patch-version }}
+          major=${{ inputs.release-major-version }}
+          minor=${{ inputs.release-minor-version }}
+          patch=${{ inputs.release-patch-version }}
+          let "minor_incr=minor+1"
+          let "patch_incr=patch+1"
           echo $major $minor $patch
+          echo $minor_incr $patch_incr
           exit 1
           echo "RELEASE_VERSION=${{ inputs.release-major-version }}.${{ inputs.release-minor-version }}.${{ inputs.release-patch-version }}" >> "$GITHUB_OUTPUT"
           echo "SNAPSHOT_VERSION=${{ inputs.release-major-version }}.${{ inputs.release-minor-version }}.${{ inputs.release-patch-version }}" >> "$GITHUB_OUTPUT"
