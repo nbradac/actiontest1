@@ -57,9 +57,14 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
           echo $major $minor $patch
           echo $minor_incr $patch_incr
           echo ${{ github.ref }}
+          echo "RELEASE_VERSION=$major.$minor.$patch" >> "$GITHUB_OUTPUT"
+          [ "${{ github.ref }}" == "refs/heads/master" ] && echo "CREATE_BRANCH=true" >> "$GITHUB_OUTPUT" || echo "CREATE_BRANCH=false" >> "$GITHUB_OUTPUT"
+          [ "${{ github.ref }}" == "refs/heads/master" ] && echo "SNAPSHOT_VERSION=$major.$minor_incr.$patch" >> "$GITHUB_OUTPUT" || echo "SNAPSHOT_VERSION=$major.$minor.$patch_incr" >> "$GITHUB_OUTPUT"
+          echo "NEW_BRANCH=release-$major.$minor.$patch" >> "$GITHUB_OUTPUT"
+          echo "BRANCH_SNAPSHOT_VERSION=$major.$minor.$patch_incr" >> "GITHUB_OUTPUT"
+
+          echo $GITHUB_OUTPUT
           exit 1
-          echo "RELEASE_VERSION=${{ inputs.release-major-version }}.${{ inputs.release-minor-version }}.${{ inputs.release-patch-version }}" >> "$GITHUB_OUTPUT"
-          echo "SNAPSHOT_VERSION=${{ inputs.release-major-version }}.${{ inputs.release-minor-version }}.${{ inputs.release-patch-version }}" >> "$GITHUB_OUTPUT"
       - name: verify aeron tag
         id: check-tag
         if: ${{ inputs.aeron-git-tag != 'origin/HEAD' }}
