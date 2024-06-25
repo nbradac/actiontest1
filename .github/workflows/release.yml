@@ -55,8 +55,11 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
       new-branch: ${{ steps.version-check.outputs.new-branch }}
       branch-snapshot-version: ${{ steps.version-check.outputs.branch-snapshot-version }}
     steps:
+      - name: checkout
+        uses: actions/checkout@v4
+        
       - id: foo
-        uses: nbradac/actiontest1/.github/actions/action-a.yml
+        uses: ./.github/actions/action-a.yml@latest
         with:
           who-to-greet: 'Mona the Octocat'
 
