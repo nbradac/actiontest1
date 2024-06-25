@@ -49,6 +49,11 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
     runs-on: ubuntu-latest
     outputs:
       new-sha: ${{ steps.set-sha.outputs.new-sha }}
+      release-version: ${{ steps.version-check.outputs.release-version }}
+      create-branch: ${{ steps.version-check.outputs.create-branch }}
+      snapshot-version: ${{ steps.version-check.outputs.snapshot-version }}
+      new-branch: ${{ steps.version-check.outputs.new-branch }}
+      branch-snapshot-version: ${{ steps.version-check.outputs.branch-snapshot-version }}
     steps:
       - name: figure out versions
         id: version-check
@@ -61,31 +66,14 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
           echo $major $minor $patch
           echo $minor_incr $patch_incr
           echo ${{ github.ref }}
-          echo "RELEASE_VERSION=$major.$minor.$patch" >> "$GITHUB_OUTPUT"
-          [ "${{ github.ref }}" == "refs/heads/master" ] && echo "CREATE_BRANCH=true" >> "$GITHUB_OUTPUT" || echo "CREATE_BRANCH=false" >> "$GITHUB_OUTPUT"
-          [ "${{ github.ref }}" == "refs/heads/master" ] && echo "SNAPSHOT_VERSION=$major.$minor_incr.$patch-SNAPSHOT" >> "$GITHUB_OUTPUT" || echo "SNAPSHOT_VERSION=$major.$minor.$patch_incr" >> "$GITHUB_OUTPUT"
-          echo "NEW_BRANCH=release-$major.$minor.$patch" >> "$GITHUB_OUTPUT"
-          echo "BRANCH_SNAPSHOT_VERSION=$major.$minor.$patch_incr" >> "$GITHUB_OUTPUT"
+          echo "release-version=$major.$minor.$patch" >> "$GITHUB_OUTPUT"
+          [ "${{ github.ref }}" == "refs/heads/master" ] && echo "create-branch=true" >> "$GITHUB_OUTPUT" || echo "create-branch=false" >> "$GITHUB_OUTPUT"
+          [ "${{ github.ref }}" == "refs/heads/master" ] && echo "snapshot-version=$major.$minor_incr.$patch-SNAPSHOT" >> "$GITHUB_OUTPUT" || echo "snapshot-version=$major.$minor.$patch_incr" >> "$GITHUB_OUTPUT"
+          echo "new-branch=release-$major.$minor.$patch" >> "$GITHUB_OUTPUT"
+          echo "branch-snapshot-version=$major.$minor.$patch_incr-SNAPSHOT" >> "$GITHUB_OUTPUT"
 
           cat $GITHUB_OUTPUT
-          exit 1
-      - name: verify aeron tag
-        id: check-tag
-        if: ${{ inputs.aeron-git-tag != 'origin/HEAD' }}
-        uses: mukunku/tag-exists-action@v1.6.0
-        with: 
-          tag: '${{ inputs.aeron-git-tag }}'
-          repo: 'real-logic/aeron'
-      - name: tag does not exist
-        if: ${{ inputs.aeron-git-tag != 'origin/HEAD' && steps.check-tag.outputs.exists == 'false' }}
-        run: |
-          echo "Tag DOES NOT exist!"
-          exit 1
-    
-      #- run: |
-      #    [[ "${{ inputs.release-version }}" =~ ^[0-9]\.[0-9][0-9]?\.[0-9][0-9]?$ ]]
-      #    [[ "${{ inputs.new-version }}" =~ ^[0-9]\.[0-9][0-9]?\.[0-9][0-9]?$ ]]
-
+     
       - if: ${{ inputs.release }}
         id: release-yes
         run: |
@@ -104,6 +92,13 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
     runs-on: ubuntu-latest
     needs: validation
     steps:
+      -
+        run: |
+          echo release version: ${{ needs.validation.outputs.release-version }}
+          echo create branch: ${{ needs.validation.outputs.create-branch }}
+          echo snapshot version: ${{ needs.validation.outputs.snapshot-version }}
+          echo new branch: ${{ needs.validation.outputs.new-branch }}
+          echo branch snapshot version: ${{ needs.validation.outputs.branch-snapshot-version }}
       -
         run: |
           echo git sha: ${{ github.sha }}
