@@ -32,7 +32,7 @@ on:
       release-patch-version:
         required: true
         type: number
-        default: 0
+        default: 1
 
       aeron-git-tag:
         description: Aeron OSS git tag
@@ -67,8 +67,8 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
           echo $minor_incr $patch_incr
           echo ${{ github.ref }}
           echo "release-version=$major.$minor.$patch" >> "$GITHUB_OUTPUT"
-          [ "${{ github.ref }}" == "refs/heads/master" ] && echo "create-branch=true" >> "$GITHUB_OUTPUT" || echo "create-branch=false" >> "$GITHUB_OUTPUT"
-          [ "${{ github.ref }}" == "refs/heads/master" ] && echo "snapshot-version=$major.$minor_incr.$patch-SNAPSHOT" >> "$GITHUB_OUTPUT" || echo "snapshot-version=$major.$minor.$patch_incr" >> "$GITHUB_OUTPUT"
+          [ "${{ github.ref }}" == "refs/heads/asdfmaster" ] && echo "create-branch=true" >> "$GITHUB_OUTPUT" || echo "create-branch=false" >> "$GITHUB_OUTPUT"
+          [ "${{ github.ref }}" == "refs/heads/asdfmaster" ] && echo "snapshot-version=$major.$minor_incr.$patch-SNAPSHOT" >> "$GITHUB_OUTPUT" || echo "snapshot-version=$major.$minor.$patch_incr" >> "$GITHUB_OUTPUT"
           echo "new-branch=release-$major.$minor.$patch" >> "$GITHUB_OUTPUT"
           echo "branch-snapshot-version=$major.$minor.$patch_incr-SNAPSHOT" >> "$GITHUB_OUTPUT"
 
