@@ -40,9 +40,6 @@ on:
         default: origin/HEAD
         type: string
 
-  schedule:
-    - cron: '0 12 * * *'
-
 jobs: # these jobs run serially because of the 'needs:' keyword on each
 
   validation:
