@@ -78,11 +78,11 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
           echo "snapshot-version=$SNAPSHOT_VERSION-SNAPSHOT" >> "$GITHUB_OUTPUT"
 
           NEW_BRANCH=""
-          [ "${{ github.ref }}" == "$MAIN_BRANCH_REF" ] && NEW_BRANCH=release-$major.$minor.$patch
+          [ "${{ github.ref }}" == "$MAIN_BRANCH_REF" ] && NEW_BRANCH="release-$major.$minor.$patch"
           echo "new-branch=release-$NEW_BRANCH" >> "$GITHUB_OUTPUT"
 
           BRANCH_SNAPSHOT_VERSION=""
-          [ "${{ github.ref }}" == "$MAIN_BRANCH_REF" ] && BRANCH_SNAPSHOT_VERSION=$major.$minor.$patch_incr-SNAPSHOT"
+          [ "${{ github.ref }}" == "$MAIN_BRANCH_REF" ] && BRANCH_SNAPSHOT_VERSION="$major.$minor.$patch_incr-SNAPSHOT"
           echo "branch-snapshot-version=$BRANCH_SNAPSHOT_VERSION" >> "$GITHUB_OUTPUT"
 
           cat $GITHUB_OUTPUT
