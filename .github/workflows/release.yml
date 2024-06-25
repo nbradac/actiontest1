@@ -71,6 +71,12 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
           echo $minor_incr $patch_incr
 
           echo "release-version=$major.$minor.$patch" >> "$GITHUB_OUTPUT"
+      
+          if [[ "${{ github.ref }}" == "$MAIN_BRANCH_REF" ]]; then
+            echo "here"
+          else
+            echo "or here"
+          fi
 
           [ "${{ github.ref }}" == "$MAIN_BRANCH_REF" ] && CREATE_BRANCH=true || CREATE_BRANCH=false
           echo "create-branch=$CREATE_BRANCH" >> "$GITHUB_OUTPUT"
