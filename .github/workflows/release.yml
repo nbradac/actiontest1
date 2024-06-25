@@ -57,9 +57,9 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
     steps:
       - name: checkout
         uses: actions/checkout@v4
-        
+
       - id: foo
-        uses: ./.github/actions/action-a.yml@latest
+        uses: ./.github/actions/action-a.yml
         with:
           who-to-greet: 'Mona the Octocat'
 
