@@ -15,9 +15,11 @@ on:
       release-version:
         required: true
         type: string
+        default: asdf
       new-version:
         required: true
         type: string
+        default: asdf
         
       release-major-version:
         required: true
@@ -26,9 +28,11 @@ on:
       release-minor-version:
         required: true
         type: number
+        default: 50
       release-patch-version:
         required: true
         type: number
+        default: 0
 
       aeron-git-tag:
         description: Aeron OSS git tag
@@ -59,10 +63,11 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
           echo ${{ github.ref }}
           echo "RELEASE_VERSION=$major.$minor.$patch" >> "$GITHUB_OUTPUT"
           [ "${{ github.ref }}" == "refs/heads/master" ] && echo "CREATE_BRANCH=true" >> "$GITHUB_OUTPUT" || echo "CREATE_BRANCH=false" >> "$GITHUB_OUTPUT"
-          [ "${{ github.ref }}" == "refs/heads/master" ] && echo "SNAPSHOT_VERSION=$major.$minor_incr.$patch" >> "$GITHUB_OUTPUT" || echo "SNAPSHOT_VERSION=$major.$minor.$patch_incr" >> "$GITHUB_OUTPUT"
+          [ "${{ github.ref }}" == "refs/heads/master" ] && echo "SNAPSHOT_VERSION=$major.$minor_incr.$patch-SNAPSHOT" >> "$GITHUB_OUTPUT" || echo "SNAPSHOT_VERSION=$major.$minor.$patch_incr" >> "$GITHUB_OUTPUT"
           echo "NEW_BRANCH=release-$major.$minor.$patch" >> "$GITHUB_OUTPUT"
           echo "BRANCH_SNAPSHOT_VERSION=$major.$minor.$patch_incr" >> "GITHUB_OUTPUT"
 
+          sleep 1
           cat $GITHUB_OUTPUT
           exit 1
       - name: verify aeron tag
