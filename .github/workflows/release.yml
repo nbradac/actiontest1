@@ -56,6 +56,7 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
           let "patch_incr=patch+1"
           echo $major $minor $patch
           echo $minor_incr $patch_incr
+          echo ${{ github.ref }}
           exit 1
           echo "RELEASE_VERSION=${{ inputs.release-major-version }}.${{ inputs.release-minor-version }}.${{ inputs.release-patch-version }}" >> "$GITHUB_OUTPUT"
           echo "SNAPSHOT_VERSION=${{ inputs.release-major-version }}.${{ inputs.release-minor-version }}.${{ inputs.release-patch-version }}" >> "$GITHUB_OUTPUT"
