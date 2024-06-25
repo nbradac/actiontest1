@@ -63,7 +63,7 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
           echo "NEW_BRANCH=release-$major.$minor.$patch" >> "$GITHUB_OUTPUT"
           echo "BRANCH_SNAPSHOT_VERSION=$major.$minor.$patch_incr" >> "GITHUB_OUTPUT"
 
-          echo $GITHUB_OUTPUT
+          cat $GITHUB_OUTPUT
           exit 1
       - name: verify aeron tag
         id: check-tag
