@@ -79,7 +79,7 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
 
           NEW_BRANCH=""
           [ "${{ github.ref }}" == "$MAIN_BRANCH_REF" ] && NEW_BRANCH="release-$major.$minor.$patch"
-          echo "new-branch=release-$NEW_BRANCH" >> "$GITHUB_OUTPUT"
+          echo "new-branch=$NEW_BRANCH" >> "$GITHUB_OUTPUT"
 
           BRANCH_SNAPSHOT_VERSION=""
           [ "${{ github.ref }}" == "$MAIN_BRANCH_REF" ] && BRANCH_SNAPSHOT_VERSION="$major.$minor.$patch_incr-SNAPSHOT"
