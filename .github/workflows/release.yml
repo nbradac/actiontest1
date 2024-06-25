@@ -32,7 +32,7 @@ on:
       release-patch-version:
         required: true
         type: number
-        default: 1
+        default: 0
 
       aeron-git-tag:
         description: Aeron OSS git tag
@@ -58,7 +58,7 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
       - name: figure out versions
         id: version-check
         run: |
-          MAIN_BRANCH_REF="refs/heads/asdfmaster"
+          MAIN_BRANCH_REF="refs/heads/master"
 
           major=${{ inputs.release-major-version }}
           minor=${{ inputs.release-minor-version }}
