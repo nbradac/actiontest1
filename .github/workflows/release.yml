@@ -18,6 +18,18 @@ on:
       new-version:
         required: true
         type: string
+        
+      release-major-version:
+        required: true
+        type: number
+        default: 1
+      release-minor-version:
+        required: true
+        type: number
+      release-patch-version:
+        required: true
+        type: number
+
       aeron-git-tag:
         description: Aeron OSS git tag
         required: true
@@ -34,6 +46,16 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
     outputs:
       new-sha: ${{ steps.set-sha.outputs.new-sha }}
     steps:
+      - name: figure out versions
+        id: version-check
+        run: |
+          let major = ${{ inputs.release-major-version }}
+          let minor = ${{ inputs.release-minor-version }}
+          let patch = ${{ inputs.release-patch-version }}
+          echo $major $minor $patch
+          exit 1
+          echo "RELEASE_VERSION=${{ inputs.release-major-version }}.${{ inputs.release-minor-version }}.${{ inputs.release-patch-version }}" >> "$GITHUB_OUTPUT"
+          echo "SNAPSHOT_VERSION=${{ inputs.release-major-version }}.${{ inputs.release-minor-version }}.${{ inputs.release-patch-version }}" >> "$GITHUB_OUTPUT"
       - name: verify aeron tag
         id: check-tag
         if: ${{ inputs.aeron-git-tag != 'origin/HEAD' }}
