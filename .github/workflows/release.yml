@@ -55,7 +55,7 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
 
       - name: asdf
         id: asdf
-        uses: nbradac/version-action
+        uses: nbradac/version-action@master
         with:
           who-to-greet: 'Mona the Octocat'
       - run: |
