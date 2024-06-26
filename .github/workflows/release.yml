@@ -53,6 +53,18 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
       branch-snapshot-version: ${{ steps.version-check.outputs.branch-snapshot-version }}
     steps:
 
+      - name: asdf
+        id: asdf
+        uses: nbradac/version-action
+        with:
+          who-to-greet: 'Mona the Octocat'
+      - run: |
+          echo random-number "$RANDOM_NUMBER"
+          exit 1
+        shell: bash
+        env:
+          RANDOM_NUMBER: ${{ steps.asdf.outputs.random-number }}
+  
       - name: figure out versions
         id: version-check
         run: |
