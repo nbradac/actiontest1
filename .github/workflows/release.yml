@@ -15,24 +15,11 @@ on:
       release-version:
         required: true
         type: string
-        default: asdf
+        default: 1.50.0
       new-version:
         required: true
         type: string
         default: asdf
-        
-      release-major-version:
-        required: true
-        type: number
-        default: 1
-      release-minor-version:
-        required: true
-        type: number
-        default: 50
-      release-patch-version:
-        required: true
-        type: number
-        default: 0
 
       aeron-git-tag:
         description: Aeron OSS git tag
@@ -46,49 +33,18 @@ jobs: # these jobs run serially because of the 'needs:' keyword on each
     runs-on: ubuntu-latest
     outputs:
       new-sha: ${{ steps.set-sha.outputs.new-sha }}
-      release-version: ${{ steps.version-check.outputs.release-version }}
-      create-branch: ${{ steps.version-check.outputs.create-branch }}
-      snapshot-version: ${{ steps.version-check.outputs.snapshot-version }}
-      new-branch: ${{ steps.version-check.outputs.new-branch }}
-      branch-snapshot-version: ${{ steps.version-check.outputs.branch-snapshot-version }}
+      release-version: ${{ steps.asdf.outputs.release-version }}
+      create-branch: ${{ steps.asdf.outputs.create-branch }}
+      snapshot-version: ${{ steps.asdf.outputs.snapshot-version }}
+      new-branch: ${{ steps.asdf.outputs.new-branch }}
+      branch-snapshot-version: ${{ steps.asdf.outputs.branch-snapshot-version }}
     steps:
 
       - name: asdf
         id: asdf
         uses: nbradac/version-action@master
         with:
-          version-string: 1.2.3
-  
-      - name: figure out versions
-        id: version-check
-        run: |
-          MAIN_BRANCH_REF="refs/heads/master"
-
-          major=${{ inputs.release-major-version }}
-          minor=${{ inputs.release-minor-version }}
-          patch=${{ inputs.release-patch-version }}
-          let "minor_incr=minor+1"
-          let "patch_incr=patch+1"
-
-          if [[ "${{ github.ref }}" == "$MAIN_BRANCH_REF" ]]; then
-            CREATE_BRANCH=true
-            SNAPSHOT_VERSION="$major.$minor_incr.$patch"
-            NEW_BRANCH="release-$major.$minor.$patch"
-            BRANCH_SNAPSHOT_VERSION="$major.$minor.$patch_incr-SNAPSHOT"
-          else
-            CREATE_BRANCH=false
-            SNAPSHOT_VERSION="$major.$minor.$patch_incr"
-            NEW_BRANCH=""
-            BRANCH_SNAPSHOT_VERSION=""
-          fi
-
-          echo "release-version=$major.$minor.$patch" >> "$GITHUB_OUTPUT"
-          echo "create-branch=$CREATE_BRANCH" >> "$GITHUB_OUTPUT"
-          echo "snapshot-version=$SNAPSHOT_VERSION-SNAPSHOT" >> "$GITHUB_OUTPUT"
-          echo "new-branch=$NEW_BRANCH" >> "$GITHUB_OUTPUT"
-          echo "branch-snapshot-version=$BRANCH_SNAPSHOT_VERSION" >> "$GITHUB_OUTPUT"
-
-          cat $GITHUB_OUTPUT
+          version-string: ${{ inputs.release-version }}
      
       - if: ${{ inputs.release }}
         id: release-yes
